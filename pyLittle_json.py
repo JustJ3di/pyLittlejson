@@ -1,11 +1,4 @@
-
-
-from array import array
-
-
 class Json:
-
-
 
     def __init__(self, filename:str = None, dict_obj:dict = None, array:list = None, simple:(int|str|float) = None) -> None:
         
@@ -15,13 +8,66 @@ class Json:
         self.simple = simple
         
 
+    def get_type(self):
+        if self.simple != None:
+            return "simple"
+        elif self.array != None :   
+            return "array"
+        else :
+            return "associative array"
+
     def print_json(self):
        
-        
-        print(self.simple)
-        print(self.array)
-        print(self.dict_obj)
+        if self.simple != None:
+            print(self.simple)
+        elif self.array != None :   
+            print(self.array)
+        else :
+            print(self.dict_obj)
+    
 
+
+
+    def serialize(self,file_output:str):
+        with open(file_output,'w') as file:
+            self.serialize_dict(file = file,diz = self.dict_obj)
+
+    def serialize_dict(self,file,diz):
+
+        print("{",file = file)
+        size = len(diz)
+        line = 0
+
+        for i in diz:
+            if line != size-1 :
+                if type(diz[i]) == dict:
+                    print(f"\t\"{i}\":",file=file)
+                    self.serialize_dict(file,diz[i])
+                    print(",",file = file)
+                else:
+                    print(f"\t\"{i}\":{self.serialize_simple(diz[i])},",file = file)
+            else :
+                if type(diz[i]) == dict:
+                    print(f"\t\"{i}\":",file=file)
+                    self.serialize_dict(file,diz[i])
+                else:
+                    print(f"\t\"{i}\":{self.serialize_simple(diz[i])}",file = file)
+            line += 1
+            
+        print("}",file = file)
+
+
+    def serialize_simple(self,value):
+        if value == True:
+            return "true"
+        elif value == False:
+            return "false"
+        elif type(value) == list:
+            return value
+        elif type(value) == int or type(value) == float:
+            return value
+        elif type(value) == str:
+            return f"\"{value}\""
 
 
     def parse_dict(self,file):
@@ -103,17 +149,17 @@ class Json:
                     chunk = file.read(1)
                 
                 if token[1:] + 'e' == "true":
-                    return True,chunk
+                    return True, chunk
                 else:
-                    return False,chunk
-
+                    return False, chunk
+            
             elif chunk == '"':
                 chunk = file.read(1)
                 
                 while chunk != '"' :
                     token += chunk 
                     chunk = file.read(1)
-                return token[1:],chunk
+                return token[1:], chunk
 
             chunk = file.read(1)
 
@@ -142,3 +188,5 @@ js = Json("prova.json")
 s = js.parse()
 
 js.print_json()
+
+js.serialize("try.json")
