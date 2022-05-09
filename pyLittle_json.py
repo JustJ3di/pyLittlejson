@@ -1,3 +1,6 @@
+from re import I
+
+
 class Json:
 
     def __init__(self, filename:str = None, dict_obj:dict = None, array:list = None, simple:(int|str|float) = None) -> None:
@@ -33,11 +36,13 @@ class Json:
             self.serialize_dict(file = file,diz = self.dict_obj)
 
     def serialize_dict(self,file,diz):
-
-        print("{",file = file)
+    
+        if diz!=self.dict_obj:
+            print("\t{",file = file)   
+        else: 
+            print("{",file = file)    
         size = len(diz)
         line = 0
-
         for i in diz:
             if line != size-1 :
                 if type(diz[i]) == dict:
@@ -54,7 +59,10 @@ class Json:
                     print(f"\t\"{i}\":{self.serialize_simple(diz[i])}",file = file)
             line += 1
             
-        print("}",file = file)
+        if diz!=self.dict_obj:
+            print("\t}",file = file)   
+        else: 
+            print("}",file = file)
 
 
     def serialize_simple(self,value):
