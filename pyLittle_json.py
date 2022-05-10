@@ -1,4 +1,6 @@
-from re import I
+
+
+from yaml import serialize
 
 
 class Json:
@@ -33,7 +35,41 @@ class Json:
 
     def serialize(self,file_output:str):
         with open(file_output,'w') as file:
-            self.serialize_dict(file = file,diz = self.dict_obj)
+            if self.dict_obj != None:    
+                self.serialize_dict(file = file, diz = self.dict_obj)
+            elif self.array != None:
+                self.serialize_array(file = file, array = self.array )
+    
+    def serialize_array(self, file, array:list):
+        
+        
+        if array != self.array:
+            print("\t[",file = file)   
+        else: 
+            print("[",file = file) 
+        
+        size = len(array)
+
+        line = 0
+        for i in array:
+            if line != size-1 :
+                if type(i) == dict:
+                    self.serialize_dict(file,i)
+                    print(",",file = file)
+                else:
+                    print(f"\t{self.serialize_simple(i)},",file = file)
+            else :
+                if type(i) == dict:
+                    self.serialize_dict(file,i)
+                else:
+                    print(f"\t{self.serialize_simple(i)}",file = file)
+            line += 1
+
+        if array!=self.array:
+            print("\t]",file = file)   
+        else: 
+            print("]",file = file)
+
 
     def serialize_dict(self,file,diz):
     
@@ -49,12 +85,20 @@ class Json:
                     print(f"\t\"{i}\":",file=file)
                     self.serialize_dict(file,diz[i])
                     print(",",file = file)
+                elif type(diz[i]) == list:
+                    print(f"\t\"{i}\":",file=file)
+                    self.serialize_array(file,diz[i])
+                    print(",",file = file)
                 else:
                     print(f"\t\"{i}\":{self.serialize_simple(diz[i])},",file = file)
             else :
                 if type(diz[i]) == dict:
                     print(f"\t\"{i}\":",file=file)
                     self.serialize_dict(file,diz[i])
+                elif type(diz[i]) == list:
+                    print(f"\t\"{i}\":",file=file)
+                    self.serialize_array(file,diz[i])
+                    print(",",file = file)
                 else:
                     print(f"\t\"{i}\":{self.serialize_simple(diz[i])}",file = file)
             line += 1
@@ -70,6 +114,8 @@ class Json:
             return "true"
         elif value == False:
             return "false"
+        elif value == None:
+            return "null"
         elif type(value) == list:
             return value
         elif type(value) == int or type(value) == float:
@@ -160,7 +206,14 @@ class Json:
                     return True, chunk
                 else:
                     return False, chunk
+            elif chunk == 'n':
+                for i in range(4):
+                    token +=chunk 
+                    chunk = file.read(1)
             
+                if "null" == token[1:]:
+                    return None, chunk
+
             elif chunk == '"':
                 chunk = file.read(1)
                 
@@ -190,6 +243,8 @@ class Json:
 
 
 
+
+####TEST###
 
 js = Json("prova.json")
 
