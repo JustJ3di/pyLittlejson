@@ -56,11 +56,16 @@ class Json:
                 if type(i) == dict:
                     self.serialize_dict(file,i)
                     print(",",file = file)
+                elif type(i) == list:
+                    self.serialize_array(file,i)
+                    print(",",file = file)
                 else:
                     print(f"\t{self.serialize_simple(i)},",file = file)
             else :
                 if type(i) == dict:
                     self.serialize_dict(file,i)
+                elif type(i) == list:
+                    self.serialize_array(file ,i)
                 else:
                     print(f"\t{self.serialize_simple(i)}",file = file)
             line += 1
@@ -248,7 +253,9 @@ class Json:
 
 js = Json("prova.json")
 
-s = js.parse()
+js.parse()
+
+js.array.append("ciaooooooooooooooooooooooo")
 
 js.print_json()
 
