@@ -1,8 +1,4 @@
 
-
-from yaml import serialize
-
-
 class Json:
 
     def __init__(self, filename:str = None, dict_obj:dict = None, array:list = None, simple:(int|str|float) = None) -> None:
