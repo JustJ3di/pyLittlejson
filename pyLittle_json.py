@@ -1,9 +1,7 @@
 
-
 class Json:
 
     def __init__(self, filename:str = None, dict_obj:dict = None, array:list = None, simple:(int|str|float) = None) -> None:
-        
         self.file = filename
         self.dict_obj = dict_obj
         self.array = array
@@ -19,7 +17,6 @@ class Json:
             return "associative array"
 
     def print_json(self):
-       
         if self.simple != None:
             print(self.simple)
         elif self.array != None :   
@@ -27,8 +24,14 @@ class Json:
         else :
             print(self.dict_obj)
     
-
-
+    def get_json(self) -> (dict | list | float | int | str):
+        if self.simple != None:
+            return self.simple
+        elif self.array != None:   
+            return self.array
+        else :
+            return self.dict_obj
+    
 
     def serialize(self,file_output:str):
         with open(file_output,'w') as file:
@@ -37,9 +40,7 @@ class Json:
             elif self.array != None:
                 self.serialize_array(file = file, array = self.array )
     
-    def serialize_array(self, file, array:list):
-        
-        
+    def serialize_array(self, file, array:list):        
         if array != self.array:
             print("\t[",file = file)   
         else: 
@@ -74,7 +75,6 @@ class Json:
 
 
     def serialize_dict(self,file,diz):
-    
         if diz!=self.dict_obj:
             print("\t{",file = file)   
         else: 
@@ -246,14 +246,3 @@ class Json:
 
 
 
-####TEST###
-
-js = Json("prova.json")
-
-js.parse()
-
-js.array.append("ciaooooooooooooooooooooooo")
-
-js.print_json()
-
-js.serialize("try.json")
