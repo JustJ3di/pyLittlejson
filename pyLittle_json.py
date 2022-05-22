@@ -41,10 +41,8 @@ class Json:
                 self.serialize_array(file = file, array = self.array )
     
     def serialize_array(self, file, array:list):        
-        if array != self.array:
-            print("\t[",file = file)   
-        else: 
-            print("[",file = file) 
+
+        file.write("[") 
         
         size = len(array)
 
@@ -53,62 +51,56 @@ class Json:
             if line != size-1 :
                 if type(i) == dict:
                     self.serialize_dict(file,i)
-                    print(",",file = file)
+                    file.write(",")
                 elif type(i) == list:
                     self.serialize_array(file,i)
-                    print(",",file = file)
+                    file.write(",")
                 else:
-                    print(f"\t{self.serialize_simple(i)},",file = file)
+                    file.write(str(self.serialize_simple(i)) + ",")
             else :
                 if type(i) == dict:
                     self.serialize_dict(file,i)
                 elif type(i) == list:
                     self.serialize_array(file ,i)
                 else:
-                    print(f"\t{self.serialize_simple(i)}",file = file)
+                    file.write(str(self.serialize_simple(i)))
             line += 1
 
-        if array!=self.array:
-            print("\t]",file = file)   
-        else: 
-            print("]",file = file)
+        
+        file.write("]")   
 
 
     def serialize_dict(self,file,diz):
-        if diz!=self.dict_obj:
-            print("\t{",file = file)   
-        else: 
-            print("{",file = file)    
+
+        file.write("{")    
+        
         size = len(diz)
         line = 0
         for i in diz:
             if line != size-1 :
                 if type(diz[i]) == dict:
-                    print(f"\t\"{i}\":",file=file)
+                    file.write(f"\"{i}\":")
                     self.serialize_dict(file,diz[i])
-                    print(",",file = file)
+                    file.write(",")
                 elif type(diz[i]) == list:
-                    print(f"\t\"{i}\":",file=file)
+                    file.write(f"\"{i}\":")
                     self.serialize_array(file,diz[i])
-                    print(",",file = file)
+                    file.write(",")
                 else:
-                    print(f"\t\"{i}\":{self.serialize_simple(diz[i])},",file = file)
+                    file.write(f"\"{i}\":{str(self.serialize_simple(diz[i]))},")
             else :
                 if type(diz[i]) == dict:
-                    print(f"\t\"{i}\":",file=file)
+                    file.write(f"\"{i}\":")
                     self.serialize_dict(file,diz[i])
                 elif type(diz[i]) == list:
-                    print(f"\t\"{i}\":",file=file)
+                    file.write(f"\"{i}\":")
                     self.serialize_array(file,diz[i])
-                    print(",",file = file)
                 else:
-                    print(f"\t\"{i}\":{self.serialize_simple(diz[i])}",file = file)
+                    file.write(f"\"{i}\":{str(self.serialize_simple(diz[i]))}")
             line += 1
             
-        if diz!=self.dict_obj:
-            print("\t}",file = file)   
-        else: 
-            print("}",file = file)
+         
+        file.write("}")
 
 
     def serialize_simple(self,value):
@@ -230,7 +222,7 @@ class Json:
 
     def parse(self):
         
-        with open(self.file) as file:
+        with open(self.file,mode = "r") as file:
             chunk = file.read(1) 
             if(chunk.isspace()):
                 pass
@@ -246,3 +238,6 @@ class Json:
 
 
 
+js = Json(dict_obj= {"ciao":[12,23,"ciao",[1112,[123,"soo",{"coap":1}],123,"cioao."]]})
+
+js.serialize("cuai.json")
