@@ -237,7 +237,3 @@ class Json:
 
 
 
-
-js = Json(dict_obj= {"ciao":[12,23,"ciao",[1112,[123,"soo",{"coap":1}],123,"cioao."]]})
-
-js.serialize("cuai.json")
